@@ -5,6 +5,7 @@ import System.Exception;
 
 // project imports
 import Expressions;
+import Stack;
 import Statements;
 import SymbolTable;
 
@@ -46,6 +47,9 @@ public object Interpreter {
            print("Interpreting \"" + (ProgramStatement mProgram).mName + "\"...");
         }
 
+        mCallStack = new CallStack();
+        mCallStack.pushFrame( new StackFrame( "global" ) );
+
         mControlFlow = ControlFlow.Normal;
         mCurrentScope = new SymbolTable("global");
 
@@ -53,7 +57,13 @@ public object Interpreter {
 
         delete mCurrentScope;
 
+        mCallStack.popFrame();
+
         return 0;
+    }
+
+    private StackFrame currentScope() const {
+        return mCallStack.peek();
     }
 
     private string processBinaryExpression(BinaryExpression exp) modify throws {
@@ -420,12 +430,12 @@ public object Interpreter {
         }
 
         // reset control flow to normal to allow method execution
-	mControlFlow = ControlFlow.Normal;
+	    mControlFlow = ControlFlow.Normal;
 
         visitCompoundStatement(stmt.mMethod.mBody);
 
         // reset control flow to normal after method execution
-	mControlFlow = ControlFlow.Normal;
+	    mControlFlow = ControlFlow.Normal;
         mCurrentScope = oldScope;
     }
 
@@ -576,6 +586,7 @@ public object Interpreter {
         }
     }
 
+    protected CallStack mCallStack;
     protected ControlFlow mControlFlow;
     protected SymbolTable mCurrentScope;
     protected Map<string, String> mConstants;

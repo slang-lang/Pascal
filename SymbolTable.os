@@ -15,21 +15,24 @@ public object SymbolTable {
 		mLevel = parent ? parent.mLevel + 1 : 0;
 		mName = name;
 		mParent = parent;
+		mStartIndex = parent ? parent.size() : 0;
 		mSymbols = new List<Symbol>();
 	}
 
-	public void Destructor() {
-		// this is empty by intend
-	}
+	public Symbol at( int stackIndex ) const throws {
+		if ( stackIndex < mStartIndex ) {
+			return mParent.at( stackIndex );
+		}
 
-	public Symbol at( int stackIndex ) const {
-		return mSymbols.at( stackIndex );
+		return mSymbols.at( stackIndex - mStartIndex );
 	}
 
 	public void declare(Symbol symbol) modify throws {
 		if ( mSymbols.contains(symbol) ) {
 			throw new Exception("duplicate symbol '" + symbol.mName + "' declared");
 		}
+
+		//print( cast<string>( symbol ) );
 
 		mSymbols.push_back(symbol);
 	}
@@ -49,9 +52,10 @@ public object SymbolTable {
 	}
 
 	public int size() const {
-		return mSymbols.size();
+		return mStartIndex + mSymbols.size();
 	}
 
+	private int mStartIndex;
 	private List<Symbol> mSymbols;
 }
 

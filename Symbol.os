@@ -24,9 +24,7 @@ public object Symbol {
 		return mName == other.mName;
 	}
 
-	public string =operator(string) const {
-		return mName + "(" + mStackIndex + "):" + mType;
-	}
+	public abstract string =operator(string) const;
 }
 
 public object LocalSymbol extends Symbol {
@@ -42,7 +40,7 @@ public object LocalSymbol extends Symbol {
 	}
 
 	public string =operator(string) const {
-		return (mIsConst ? "CONST " : "") + mName + "(" + mStackIndex + "): " + mType;
+		return (mIsConst ? "CONST " : "VAR ") + mName + "(" + mStackIndex + "): " + mType;
 	}
 }
 
@@ -54,6 +52,10 @@ public object MethodSymbol extends Symbol {
 
 		mMethod = method;
 		mStackIndex = stackIndex;
+	}
+
+	public string =operator(string) const {
+		return "METHOD " + mName + "(" + mStackIndex + "): " + mType;
 	}
 }
 

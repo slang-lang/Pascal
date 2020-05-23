@@ -154,10 +154,12 @@ public object ConstantDeclarationStatement extends Statement {
 
 	public string toString() const {
 		string result;
+
 		foreach ( DeclarationStatement stmt : mDeclarations ) {
-			result += (result ? LINEBREAK : "") + stmt.toString();
+			result += (result ? ";" + LINEBREAK : "") + stmt.toString();
 		}
-		return result ? "CONST" + LINEBREAK + result : "";
+
+		return result ? "CONST" + LINEBREAK + result + ";" : "";
 	}
 }
 
@@ -187,7 +189,7 @@ public object DeclarationStatement extends Statement {
 	}
 
 	public string toString() const {
-		return (mIsConst ? "CONST " : "") + mName + ": " + mType + (mValue ? " := " + mValue.toString() : "") + ";";
+		return /*(mIsConst ? "CONST " : "") +*/ mName + ": " + mType + (mValue ? " := " + mValue.toString() : "");// + ";";
 	}
 }
 
@@ -241,12 +243,12 @@ public object FunctionStatement extends ScopeStatement {
 		string params;
 		foreach ( DeclarationStatement stmt : mParameters ) {
 			if ( params ) {
-				params += " ";
+				params += "; ";
 			}
 			params += stmt.toString();
 		}
 
-		return "FUNCTION " + mName + "(" + params + "): " + mResultType + ";" + LINEBREAK + mBody.toString();
+		return "FUNCTION " + mName + ( params ? "( " + params + " )" : "()" ) + ": " + mResultType + ";" + LINEBREAK + mBody.toString();
 	}
 }
 
@@ -291,7 +293,7 @@ public object MethodCallStatement extends Statement {
 			}
 			params += exp.toString();
 		}
-		return mName + "(" + params + ")";
+		return mName + ( params ? "( " + params + " )" : "()" );
 	}
 }
 
@@ -306,12 +308,12 @@ public object ProcedureStatement extends ScopeStatement {
 		string params;
 		foreach ( DeclarationStatement stmt : mParameters ) {
 			if ( params ) {
-				params += " ";
+				params += "; ";
 			}
 			params += stmt.toString();
 		}
 
-		return "PROCEDURE " + mName + "(" + params + ");" + LINEBREAK + mBody.toString();
+		return "PROCEDURE " + mName + ( params ? "( " + params + " )" : "()" ) + LINEBREAK + mBody.toString();
 	}
 }
 
@@ -445,10 +447,12 @@ public object VariableDeclarationStatement extends Statement {
 
 	public string toString() const {
 		string result;
+
 		foreach ( DeclarationStatement stmt : mDeclarations ) {
-			result += (result ? LINEBREAK : "") + stmt.toString();
+			result += (result ? ";" + LINEBREAK : "") + stmt.toString();
 		}
-		return result ? "VAR" + LINEBREAK + result : "";
+
+		return result ? "VAR" + LINEBREAK + result + ";" : "";
 	}
 }
 
