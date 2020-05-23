@@ -1,6 +1,6 @@
 PROGRAM SumOf1To100;
 VAR
-	COUNT: INTEGER := 1;
+	COUNT: INTEGER;
 	SUM: INTEGER;
 BEGIN
 	WRITELN( 'Summing the values between 1 and 100' );

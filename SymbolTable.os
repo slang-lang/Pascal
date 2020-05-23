@@ -7,12 +7,10 @@ import Symbol;
 
 
 public object SymbolTable {
-	public int mLevel const;
 	public string mName const;
 	public SymbolTable mParent const;
 
 	public void Constructor(string name, SymbolTable parent = null) {
-		mLevel = parent ? parent.mLevel + 1 : 0;
 		mName = name;
 		mParent = parent;
 		mStartIndex = parent ? parent.size() : 0;

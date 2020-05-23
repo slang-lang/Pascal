@@ -51,7 +51,7 @@ public object Interpreter {
         mCallStack.pushFrame( new StackFrame( "global" ) );
 
         mControlFlow = ControlFlow.Normal;
-        mCurrentScope = new SymbolTable("global");
+        mCurrentScope = mCallStack.peek();
 
         visitCompoundStatement((ProgramStatement mProgram).mStatements);
 
@@ -184,7 +184,7 @@ public object Interpreter {
 
     private string processMethodExpression(MethodExpression exp) modify {
         var oldScope = mCurrentScope;
-        mCurrentScope = new SymbolTable(exp.mMethod.mName, oldScope);
+        mCurrentScope = mCallStack.pushFrame(exp.mMethod.mName, oldScope);
 
         if ( exp.mParameters && exp.mMethod.mParameters ) {
             // add symbols for parameters
@@ -214,7 +214,9 @@ public object Interpreter {
         mControlFlow = ControlFlow.Normal;
 
         var resultValue = cast<string>( result.mValue );
-        mCurrentScope = oldScope;
+
+        mCallStack.popFrame();
+        mCurrentScope = mCallStack.peek();
 
         return resultValue;
     }
@@ -310,9 +312,7 @@ public object Interpreter {
         var oldScope = mCurrentScope;
 
         try {
-            if ( compound.mConstantDeclarations || compound.mVariableDeclarations ) {
-                mCurrentScope = new SymbolTable("", oldScope);
-            }
+            mCurrentScope = mCallStack.pushFrame("", oldScope);
 
             if ( compound.mConstantDeclarations ) {
                 visitConstantDeclarationStatement(compound.mConstantDeclarations);
@@ -331,7 +331,8 @@ public object Interpreter {
             }
         }
         finally {
-            mCurrentScope = oldScope;
+            mCallStack.popFrame();
+            mCurrentScope = mCallStack.peek();
         }
     }
 
@@ -411,7 +412,7 @@ public object Interpreter {
 
     private void visitMethodStatement(MethodCallStatement stmt) modify throws {
         var oldScope = mCurrentScope;
-        mCurrentScope = new SymbolTable(stmt.mName, oldScope);
+        mCurrentScope = mCallStack.pushFrame(stmt.mName, oldScope);
 
         if ( stmt.mParameters && stmt.mMethod.mParameters ) {
             // add symbols for parameters
@@ -436,7 +437,9 @@ public object Interpreter {
 
         // reset control flow to normal after method execution
 	    mControlFlow = ControlFlow.Normal;
-        mCurrentScope = oldScope;
+
+        mCallStack.popFrame();
+        mCurrentScope = mCallStack.peek();
     }
 
     private void visitReadlineStatement(ReadlineStatement stmt) modify throws {
@@ -588,7 +591,7 @@ public object Interpreter {
 
     protected CallStack mCallStack;
     protected ControlFlow mControlFlow;
-    protected SymbolTable mCurrentScope;
+    protected StackFrame mCurrentScope;
     protected Map<string, String> mConstants;
     protected Statement mProgram;
 }
