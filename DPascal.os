@@ -27,7 +27,7 @@ public object PascalDebugger {
 
 		if ( !params.empty() ) {
 			// load file if any params are set
-			loadFile(params.at(0).Key);
+			loadFile( params[0].Key );
 		}
 	}
 

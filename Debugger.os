@@ -15,11 +15,11 @@ public object Debugger extends Interpreter {
             return -1;
         }
 
-	    if ( debug ) {
-	        print("Debugging \"" + (ProgramStatement mProgram).mName + "\"...");
-	    }
+	if ( debug ) {
+	    print("Debugging \"" + (ProgramStatement mProgram).mName + "\"...");
+	}
 
-        mCurrentScope = new SymbolTable("global");
+        mCurrentScope = new StackFrame( "global" );
 
         visitCompoundStatement((ProgramStatement mProgram).mStatements);
 

@@ -10,13 +10,13 @@ public object StackFrame {
     public string mName const;
 	public StackFrame mParent const;
 
-    public void Constructor( string name, StackFrame parent = null ) {
-        mLevel = parent ? parent.mLevel + 1 : 0;
-        mName = name;
+	public void Constructor( string name, StackFrame parent = null ) {
+		mLevel = parent ? parent.mLevel + 1 : 0;
+		mName = name;
 		mParent = parent;
 		mStartIndex = parent ? parent.size() : 0;
 		mSymbols = new List<Symbol>();
-    }
+	}
 
 	public Symbol at( int stackIndex ) const throws {
         //print( "at(" + stackIndex + ")" );
