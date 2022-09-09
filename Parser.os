@@ -35,7 +35,7 @@ public object Parser {
 		mTokenIterator = mTokens.getIterator();
 
 		if ( debug ) {
-			print("Building AST for \"" + filename + "\"...");
+			print( "Building AST for \"" + filename + "\"..." );
 		}
 
 		Statement statement;
@@ -168,11 +168,11 @@ public object Parser {
 	}
 
 	private CompoundStatement parseCompoundStatement() modify throws {
-		//print("parseCompoundStatement()");
+		//print( "parseCompoundStatement()" );
 
 		Token token = consume();
 		if ( !token || token.mType != TokenType.BEGIN ) {
-			throw new ParseException("invalid COMPOUND statement found" + toString(token), token.mPosition);
+			throw new ParseException( "invalid COMPOUND statement found" + toString(token), token.mPosition );
 		}
 
 		var statements = new List<Statement>();
@@ -186,7 +186,7 @@ public object Parser {
 	}
 
 	private CompoundStatement parseCompoundStatementWithDeclarations() modify throws {
-		//print("parseCompoundStatementWithDeclarations()");
+		//print( "parseCompoundStatementWithDeclarations()" );
 
 		var constStmt = parseConstantDeclarationStatement();
 		var varStmt = parseVariableDeclarationStatement();
@@ -217,7 +217,7 @@ public object Parser {
 	}
 
 	private ConstantDeclarationStatement parseConstantDeclarationStatement() modify throws {
-		//print("parseConstantDeclarationStatement()");
+		//print( "parseConstantDeclarationStatement()" );
 
 		var stmt = new ConstantDeclarationStatement();
 
@@ -551,18 +551,16 @@ public object Parser {
 	}
 
 	private ProgramStatement parseProgram() modify throws {
-		//print("parseProgram()");
+		//print( "parseProgram()" );
 
 		Token name = consume();
 		if ( !name || name.mType != TokenType.IDENTIFIER ) {
-			throw new ParseException("invalid PROGRAM statement found" + toString(name), name.mPosition);
+			throw new ParseException( "invalid PROGRAM statement found" + toString( name ), name.mPosition );
 		}
 
 		require(TokenType.SEMICOLON);
 
 		mCurrentScope = new Scope("global");
-
-		Token token = peek();
 
 		var uses = parseUsesStatement();
 		var statements = parseCompoundStatementWithDeclarations();
@@ -710,7 +708,7 @@ public object Parser {
 	}
 
 	private UnitStatement parseUnit() modify throws {
-		//print("parseUnit()");
+		//print( "parseUnit()" );
 
 		Token name = consume();
 		if ( !name || name.mType != TokenType.IDENTIFIER ) {
@@ -739,7 +737,7 @@ public object Parser {
 	}
 
 	private UsesStatement parseUsesStatement() modify throws {
-		//print("parseUsesStatement()");
+		//print( "parseUsesStatement()" );
 
 		var uses = new UsesStatement();
 
@@ -773,7 +771,7 @@ public object Parser {
 	}
 
 	private VariableDeclarationStatement parseVariableDeclarationStatement() modify throws {
-		//print("parseVariableDeclarationStatement()");
+		//print( "parseVariableDeclarationStatement()" );
 
 		var stmt = new VariableDeclarationStatement();
 
@@ -851,76 +849,76 @@ public object Parser {
 	private Expression expression() modify {
 		//print("expression()");
 
-		Expression node = parseCondition();
+		var node = parseCondition();
 
+		Expression expr;
 		Token op;
 		while ( (op = peek()) != null &&
 				(op.mType == TokenType.AND || op.mType == TokenType.OR) ) {
 			consume();
 
-			Expression exp = Expression new BooleanBinaryExpression(op, node, op.mValue, parseCondition());
-			node = exp;
+			expr = Expression new BooleanBinaryExpression(op, node, op.mValue, parseCondition());
 		}
 
-		return node;
+		return expr ?: node;
 	}
 
 	private Expression parseCondition() modify throws {
 		//print("parseCondition()");
 
-		Expression node = parseExpression();
+		var node = parseExpression();
 
+		Expression expr;
 		Token op;
 		while ( (op = peek()) != null && isComperator(op) ) {
 			consume();
 
-			Expression exp = Expression new BooleanBinaryExpression(op, node, op.mValue, parseExpression());
-			node = exp;
+			expr = Expression new BooleanBinaryExpression(op, node, op.mValue, parseExpression());
 		}
 
-		return node;
+		return expr ?: node;
 	}
 
 	private Expression parseExpression() modify throws {
 		//print("parseExpression()");
 
-		Expression left = parseFactor();
+		var left = parseFactor();
 
+		Expression expr;
 		Token op;
 		while ( (op = peek()) != null &&
 				(op.mType == TokenType.MATH_MINUS || op.mType == TokenType.MATH_PLUS) ) {
 			consume();
 
-			Expression right = parseFactor();
+			var right = parseFactor();
 
-			Expression exp = Expression new BinaryExpression(op, left, op.mValue, right, evaluateType(left, right));
-			left = exp;
+			expr = Expression new BinaryExpression( op, left, op.mValue, right, evaluateType( left, right ) );
 		}
 
-		return left;
+		return expr ?: left;
 	}
 
 	private Expression parseFactor() modify throws {
 		//print("parseFactor()");
 
-		Expression left = parseTerm();
+		var left = parseTerm();
 
+		Expression expr;
 		Token op;
 		while ( (op = peek()) != null &&
 				(op.mType == TokenType.MATH_DIVIDE || op.mType == TokenType.MATH_DIVIDE_INT || op.mType == TokenType.MATH_MULTIPLY) ) {
 			consume();
 
-			Expression right = parseTerm();
+			var right = parseTerm();
 
-			Expression exp = Expression new BinaryExpression(op, left, op.mValue, right, evaluateType(left, right));
-			left = exp;
+			expr = Expression new BinaryExpression(op, left, op.mValue, right, evaluateType(left, right));
 		}
 
-		return left;
+		return expr ?: left;
 	}
 
 	private Expression parseIdentifier() modify throws {
-		//print("parseIdentifier()");
+		//print( "parseIdentifier()" );
 
 		Token token = consume();
 
@@ -947,7 +945,7 @@ public object Parser {
 	}
 
 	private Expression parseTerm() modify throws {
-		//print("parseTerm()");
+		//print( "parseTerm()" );
 
 		Token token = peek();
 		switch ( token.mType ) {
@@ -1006,6 +1004,10 @@ public object Parser {
 		return Token null;
 	}
 
+	private Token current() const {
+		return mTokenIterator.current();
+	}
+
 	private Symbol getSymbol(string identifier) const throws {
 		try { return mCurrentScope.lookup(identifier); }
 
@@ -1026,8 +1028,8 @@ public object Parser {
 		return false;
 	}
 
-	private Token peek(int pos = 1) const throws {
-		try { return mTokenIterator.peek(pos); }
+	private Token peek( int pos = 1 ) const throws {
+		try { return mTokenIterator.peek( pos ); }
 
 		return Token null;
 	}

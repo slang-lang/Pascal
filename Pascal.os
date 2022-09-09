@@ -9,49 +9,49 @@ import Interpreter;
 import Parser;
 
 
-public int Main(int argc, string args) modify {
+public int Main( int argc, string args ) modify {
 	var debug = false;
-	var params = new ParameterHandler(argc, args);
+	var params = new ParameterHandler( argc, args );
 
 	// Handle parameters
 	// {
-	if ( params.contains("debug") ) {
+	if ( params.contains( "debug" ) ) {
 		debug = true;
-		params.remove("debug");
+		params.remove( "debug" );
 	}
 
-	if ( params.contains("version") ) {
-		print(APPNAME + " " + VERSION);
+	if ( params.contains( "version" ) ) {
+		print( APPNAME + " " + VERSION );
 		return 0;
 	}
 
 	if ( params.empty() ) {
-		print("not enought parameters provided!");
+		print( "not enought parameters provided!" );
 		return -1;
 	}
 	// }
 
 	try {
 		var parser = new Parser();
-		var program = parser.parseFile( params[0].Key, debug );
+		var program = parser.parseFile( params[ 0 ].Key, debug );
 
 		if ( debug ) {
-			print("");
-			print(program.toString());
-			print("");
+			print( "" );
+			print( program.toString() );
+			print( "" );
 		}
 
-		var interpreter = new Interpreter(program);
-		return interpreter.run(debug);
+		var interpreter = new Interpreter( program );
+		return interpreter.run( debug );
 	}
 	catch ( string e ) {
-		print("Error: " + e);
+		print( "Error: " + e );
 	}
 	catch ( IException e ) {
-		print("Error: " + e.what());
+		print( "Error: " + e.what() );
 	}
 	catch {
-		print("Error: caught unknown exception!");
+		print( "Error: caught unknown exception!" );
 	}
 
 	return -1;
