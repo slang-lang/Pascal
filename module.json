@@ -1,15 +1,16 @@
 {
   "name": "Pascal Interpreter",
   "name_short": "Pascal",
-  "version": "0.1.10",
+  "version": "0.1.11-alpha",
   "description": "Pascal interpreter parses and interprets Pascal (*.pas) scripts.",
   "dependencies": [
-    { "module": "Slang", "version_min": "0.7.0" },
+    { "module": "Slang", "version_min": "0.9.3-alpha" },
     { "module": "System", "version_min": "0.2.0" },
     { "module": "libParam", "version_min": "0.2.0" }
   ],
   "target": {
     "directory": "Pascal",
+    "install": ["Pascal.os"],
     "type": "internal"
   }
 }
