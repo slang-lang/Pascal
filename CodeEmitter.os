@@ -47,11 +47,11 @@ public object CodeEmitter {
            print( "Interpreting \"" + ( ProgramStatement mProgram ).mName + "\"..." );
         }
 
-		writeLine();
-		writeLine( "#include <stdio.h>" );
-		writeLine();
-		writeLine( "int main( void )" );
-		writeLine( "{" );
+        writeLine();
+        writeLine( "#include <stdio.h>" );
+        writeLine();
+        writeLine( "int main( void )" );
+        writeLine( "{" );
 
         mCallStack = new CallStack();
         mCallStack.pushFrame( new StackFrame( "global" ) );
@@ -65,14 +65,14 @@ public object CodeEmitter {
 
         mCallStack.popFrame();
 
-		writeLine();
-		writeLine( "return 0;", 3 );
-		writeLine( "}" );
-		writeLine();
+        writeLine();
+        writeLine( "return 0;", 3 );
+        writeLine( "}" );
+        writeLine();
 
-		var file = new System.IO.File( "output.c", System.IO.File.AccessMode.WriteOnly );
-		file.write( mOutput );
-		file.close();
+        var file = new System.IO.File( "output.c", System.IO.File.AccessMode.WriteOnly );
+        file.write( mOutput );
+        file.close();
 
         return 0;
     }
